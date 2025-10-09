@@ -1,21 +1,12 @@
 steps:
-- name: 'gcr.io/cloud-builders/docker:latest'
-  entrypoint: 'bash'
+- name: 'gcr.io/kaniko-project/executor:latest'
   args:
-    - '-c'
-    - |
-      set -e
-      export DOCKER_BUILDKIT=1
-      
-      cd ${_SRC_DIRECTORY}/bitnami/pgbouncer/1/debian-12
-      IMAGE="gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer:$SHORT_SHA"
-      
-      docker build -t $${IMAGE} .
-      docker push $${IMAGE}
-      
-      # Tag as latest
-      docker tag $${IMAGE} gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer:latest
-      docker push gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer:latest
+    - --dockerfile=bitnami/pgbouncer/1/debian-12/Dockerfile
+    - --context=dir://${_SRC_DIRECTORY}/bitnami/pgbouncer/1/debian-12
+    - --destination=gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer:$SHORT_SHA
+    - --destination=gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer:latest
+    - --cache=true
+    - --cache-ttl=24h
 
 images:
   - 'gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer'
