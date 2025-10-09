@@ -8,6 +8,8 @@ build:
     - image: pgbouncer
       context: bitnami/pgbouncer/1/debian-12
       docker:
+        buildArgs:
+          DOCKER_BUILDKIT: "1"
         dockerfile: Dockerfile
   googleCloudBuild:
     projectId: itone-295207
