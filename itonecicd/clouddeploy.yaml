@@ -7,7 +7,7 @@ steps:
       - '--default-repo=gcr.io/$PROJECT_ID/${_REPO_NAME}'
   dir: '${_SRC_DIRECTORY}'
 
-  substitutions:
-    _BUILD_REGION: asia-southeast1
-    _SRC_DIRECTORY: ./
-    _REPO_NAME: bitnami-containers
+substitutions:
+  _BUILD_REGION: asia-southeast1
+  _SRC_DIRECTORY: ./
+  _REPO_NAME: bitnami-containers
