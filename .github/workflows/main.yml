@@ -1,0 +1,20 @@
+on:
+  workflow_dispatch:
+//on:
+//  schedule:
+//  - cron: "0 2 * * 1-5"
+---
+jobs:	
+sync:	
+runs-on: ubuntu-latest	
+steps:
+- name: Checkout 
+  uses: actions/checkout@v4
+- name: Upstream Sync
+  uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+  with:
+    target_sync_branch: main
+    target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+    upstream_sync_repo: bitnami/containers
+    upstream_sync_branch: main
+
