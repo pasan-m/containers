@@ -4,11 +4,9 @@
       - build
       - '--interactive=false'
       - '--default-repo=gcr.io/$PROJECT_ID/${_REPO_NAME}'
-      - '--file-output=${_BUILD_ARTIFACT}'
   dir: '${_SRC_DIRECTORY}'
 
   substitutions:
-  _BUILD_ARTIFACT: artifacts.json
   _BUILD_REGION: asia-southeast1
   _SRC_DIRECTORY: ./
   _REPO_NAME: pgbouncer
