@@ -7,13 +7,13 @@ ARG DOWNLOADS_URL="downloads.bitnami.com/files/stacksmith"
 ARG TARGETARCH
 
 LABEL org.opencontainers.image.base.name="docker.io/bitnami/minideb:bookworm" \
-      org.opencontainers.image.created="2025-10-09T06:49:37Z" \
+      org.opencontainers.image.created="2025-10-09T07:43:50Z" \
       org.opencontainers.image.description="Application packaged by Broadcom, Inc." \
-      org.opencontainers.image.documentation="https://github.com/bitnami/containers/tree/main/bitnami/envoy-gateway/README.md" \
-      org.opencontainers.image.source="https://github.com/bitnami/containers/tree/main/bitnami/envoy-gateway" \
-      org.opencontainers.image.title="envoy-gateway" \
+      org.opencontainers.image.documentation="https://github.com/bitnami/containers/tree/main/bitnami/acmesolver/README.md" \
+      org.opencontainers.image.source="https://github.com/bitnami/containers/tree/main/bitnami/acmesolver" \
+      org.opencontainers.image.title="acmesolver" \
       org.opencontainers.image.vendor="Broadcom, Inc." \
-      org.opencontainers.image.version="1.5.3"
+      org.opencontainers.image.version="1.19.0"
 
 ENV HOME="/" \
     OS_ARCH="${TARGETARCH:-amd64}" \
@@ -28,7 +28,7 @@ RUN --mount=type=secret,id=downloads_url,env=SECRET_DOWNLOADS_URL \
     DOWNLOADS_URL=${SECRET_DOWNLOADS_URL:-${DOWNLOADS_URL}} ; \
     mkdir -p /tmp/bitnami/pkg/cache/ ; cd /tmp/bitnami/pkg/cache/ || exit 1 ; \
     COMPONENTS=( \
-      "envoy-gateway-1.5.3-0-linux-${OS_ARCH}-debian-12" \
+      "acmesolver-1.19.0-0-linux-${OS_ARCH}-debian-12" \
     ) ; \
     for COMPONENT in "${COMPONENTS[@]}"; do \
       if [ ! -f "${COMPONENT}.tar.gz" ]; then \
@@ -45,10 +45,11 @@ RUN chmod g+rwX /opt/bitnami
 RUN find / -perm /6000 -type f -exec chmod a-s {} \; || true
 RUN uninstall_packages curl
 
-ENV APP_VERSION="1.5.3" \
-    BITNAMI_APP_NAME="envoy-gateway" \
+ENV APP_VERSION="1.19.0" \
+    BITNAMI_APP_NAME="acmesolver" \
     IMAGE_REVISION="0" \
-    PATH="/opt/bitnami/envoy-gateway/bin:$PATH"
+    PATH="/opt/bitnami/acmesolver/bin:$PATH"
 
+WORKDIR /opt/bitnami/acmesolver
 USER 1001
-ENTRYPOINT [ "/opt/bitnami/envoy-gateway/bin/envoy-gateway" ]
+ENTRYPOINT [ "/opt/bitnami/acmesolver/bin/acmesolver" ]
