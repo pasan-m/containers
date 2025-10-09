@@ -9,7 +9,8 @@ steps:
     - --cache-ttl=24h
 
 images:
-  - 'gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer'
+  - 'gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer:latest'
 
 substitutions:
   _BUILD_REGION: asia-southeast1
