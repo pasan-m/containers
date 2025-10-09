@@ -11,3 +11,6 @@ build:
         dockerfile: Dockerfile
   googleCloudBuild:
     projectId: itone-295207
+    dockerImage: gcr.io/cloud-builders/docker:latest
+    env:
+    - DOCKER_BUILDKIT=1
