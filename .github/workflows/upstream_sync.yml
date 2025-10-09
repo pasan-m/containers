@@ -51,9 +51,14 @@ jobs:
         if: steps.get_upstream_hash.outputs.hash != steps.get_cached_hash.outputs.hash
         run: echo "File has changed. Proceeding with sync."
 
-      - name: Checkout and Sync Fork
-        # This step only runs if the hashes are different
-        if: steps.get_upstream_hash.outputs.hash != steps.get_cached_hash.outputs.hash
+      - name: Checkout Repo
+        # This step only runs if a change was detected
+        if: steps.check_changes.outputs.changed == 'true'
+        uses: actions/checkout@v4
+
+      - name: Sync Fork
+        # This step only runs if a change was detected
+        if: steps.check_changes.outputs.changed == 'true'
         uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
         with:
           target_sync_branch: main
