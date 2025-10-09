@@ -1,0 +1,12 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+metadata:
+  name: pgbouncer
+
+build:
+  artifacts:
+    - image: pgbouncer
+      docker:
+        dockerfile: ../bitnami/pgbouncer/1/debian-12/Dockerfile
+  googleCloudBuild:
+    projectId: itone-295207
