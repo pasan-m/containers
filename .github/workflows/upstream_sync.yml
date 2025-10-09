@@ -12,6 +12,7 @@ jobs:
       contents: write # The sync action needs permission to write to your repo
     
     env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       UPSTREAM_REPO: bitnami/containers
       UPSTREAM_FILE_PATH: bitnami/pgbouncer/1/debian-12/Dockerfile
 
