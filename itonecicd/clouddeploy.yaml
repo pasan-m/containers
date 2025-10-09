@@ -8,6 +8,6 @@ steps:
   dir: '${_SRC_DIRECTORY}'
 
   substitutions:
-  _BUILD_REGION: asia-southeast1
-  _SRC_DIRECTORY: ./
-  _REPO_NAME: bitnami-containers
+    _BUILD_REGION: asia-southeast1
+    _SRC_DIRECTORY: ./
+    _REPO_NAME: bitnami-containers
