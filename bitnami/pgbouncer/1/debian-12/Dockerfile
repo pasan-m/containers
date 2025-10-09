@@ -24,7 +24,8 @@ COPY prebuildfs /
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 # Install required system packages and dependencies
 RUN install_packages ca-certificates curl libaudit1 libbsd0 libc-ares2 libcap-ng0 libedit2 libevent-2.1-7 libffi8 libgcc-s1 libgmp10 libgnutls30 libhogweed6 libicu72 libidn2-0 libldap-2.5-0 liblzma5 libmd0 libnettle8 libp11-kit0 libpam0g libsasl2-2 libssl3 libstdc++6 libtasn1-6 libtinfo6 libunistring2 libuuid1 libxml2 libxslt1.1 locales procps zlib1g
-RUN DOWNLOADS_URL=${DOWNLOADS_URL} ; \
+RUN --mount=type=secret,id=downloads_url,env=SECRET_DOWNLOADS_URL \
+    DOWNLOADS_URL=${SECRET_DOWNLOADS_URL:-${DOWNLOADS_URL}} ; \
     mkdir -p /tmp/bitnami/pkg/cache/ ; cd /tmp/bitnami/pkg/cache/ || exit 1 ; \
     COMPONENTS=( \
       "nss-wrapper-1.1.16-0-linux-${OS_ARCH}-debian-12" \
