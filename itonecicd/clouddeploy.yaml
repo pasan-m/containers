@@ -1,12 +1,24 @@
 steps:
-- name: 'gcr.io/k8s-skaffold/skaffold'
+- name: 'gcr.io/cloud-builders/docker:latest'
+  entrypoint: 'bash'
   args:
-      - skaffold
-      - build
-      - '--interactive=false'
-      - '--default-repo=gcr.io/$PROJECT_ID/${_REPO_NAME}'
-      - '--filename=itonecicd/skaffold.yaml'
-  dir: '${_SRC_DIRECTORY}'
+    - '-c'
+    - |
+      set -e
+      export DOCKER_BUILDKIT=1
+      
+      cd ${_SRC_DIRECTORY}/bitnami/pgbouncer/1/debian-12
+      IMAGE="gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer:$SHORT_SHA"
+      
+      docker build -t $${IMAGE} .
+      docker push $${IMAGE}
+      
+      # Tag as latest
+      docker tag $${IMAGE} gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer:latest
+      docker push gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer:latest
+
+images:
+  - 'gcr.io/$PROJECT_ID/${_REPO_NAME}/pgbouncer'
 
 substitutions:
   _BUILD_REGION: asia-southeast1
