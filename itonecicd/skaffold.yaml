@@ -6,7 +6,8 @@ metadata:
 build:
   artifacts:
     - image: pgbouncer
+      context: bitnami/pgbouncer/1/debian-12
       docker:
-        dockerfile: bitnami/pgbouncer/1/debian-12/Dockerfile
+        dockerfile: Dockerfile
   googleCloudBuild:
     projectId: itone-295207
