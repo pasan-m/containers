@@ -5,6 +5,7 @@ steps:
       - build
       - '--interactive=false'
       - '--default-repo=gcr.io/$PROJECT_ID/${_REPO_NAME}'
+      - '--filename=itonecicd/skaffold.yaml'
   dir: '${_SRC_DIRECTORY}'
 
 substitutions:
