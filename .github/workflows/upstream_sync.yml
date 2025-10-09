@@ -1,0 +1,76 @@
+name: Sync Fork on Upstream File Change
+
+on:
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+  schedule:
+    - cron: '0 8 * * *' # Runs every day at 08:00 UTC
+
+jobs:
+  sync_if_changed:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # The sync action needs permission to write to your repo
+    
+    env:
+      UPSTREAM_REPO: bitnami/containers
+      UPSTREAM_FILE_PATH: bitnami/pgbouncer/1/debian-12/Dockerfile
+
+    steps:
+      - name: Get current hash of upstream Dockerfile
+        id: get_upstream_hash
+        run: |
+          # Use the GitHub API to get the metadata of the file, and parse the SHA hash with jq
+          FILE_HASH=$(gh api "repos/${{ env.UPSTREAM_REPO }}/contents/${{ env.UPSTREAM_FILE_PATH }}" --jq '.sha')
+          echo "Current upstream hash: $FILE_HASH"
+          echo "hash=$FILE_HASH" >> "$GITHUB_OUTPUT"
+          
+      - name: Restore cached hash
+        id: cache_restore
+        uses: actions/cache/restore@v4
+        with:
+          # The path to the file that will store the last known hash
+          path: ./.last_hash
+          # The key for the cache entry, unique to the monitored file
+          key: upstream-file-hash-${{ env.UPSTREAM_FILE_PATH }}
+
+      - name: Get the last known hash from cache
+        id: get_cached_hash
+        run: |
+          # If the cache was restored, read the hash from the file
+          if [ -f ./.last_hash ]; then
+            CACHED_HASH=$(cat ./.last_hash)
+            echo "Cached hash: $CACHED_HASH"
+            echo "hash=$CACHED_HASH" >> "$GITHUB_OUTPUT"
+          else
+            echo "No cached hash found."
+            echo "hash=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Compare hashes and sync if needed
+        if: steps.get_upstream_hash.outputs.hash != steps.get_cached_hash.outputs.hash
+        run: echo "File has changed. Proceeding with sync."
+
+      - name: Checkout and Sync Fork
+        # This step only runs if the hashes are different
+        if: steps.get_upstream_hash.outputs.hash != steps.get_cached_hash.outputs.hash
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          target_sync_branch: main
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_repo: ${{ env.UPSTREAM_REPO }}
+          upstream_sync_branch: main
+
+      - name: Update the cached hash
+        # This step also only runs if the hashes were different, saving the new hash for the next run
+        if: steps.get_upstream_hash.outputs.hash != steps.get_cached_hash.outputs.hash
+        run: |
+          echo "Updating cache with new hash: ${{ steps.get_upstream_hash.outputs.hash }}"
+          echo "${{ steps.get_upstream_hash.outputs.hash }}" > ./.last_hash
+          
+      - name: Save new hash to cache
+        # This uses the same key as the restore step and will create/update the cache
+        if: steps.get_upstream_hash.outputs.hash != steps.get_cached_hash.outputs.hash
+        uses: actions/cache/save@v4
+        with:
+          path: ./.last_hash
+          key: ${{ steps.cache_restore.outputs.cache-primary-key }}
