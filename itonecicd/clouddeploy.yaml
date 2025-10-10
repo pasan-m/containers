@@ -8,6 +8,15 @@ steps:
     - --cache=true
     - --cache-ttl=24h
 
+- name: 'google/cloud-sdk:stable'
+  script: |
+    gcloud source repos clone kube-manifest --project=itone-295207
+    cd kube-manifest
+    gcloud container clusters get-credentials itone-staging-cluster --region asia-southeast1 --project itone-295207 
+    helm upgrade --dry-run pgbouncer-release \
+     -f pgbouncer-conf/values.stage.yaml pgbouncer-conf/ \
+     --set image.tag=$SHORT_SHA
+
 substitutions:
   _BUILD_REGION: asia-southeast1
   _SRC_DIRECTORY: ./
