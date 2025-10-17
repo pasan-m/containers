@@ -9,6 +9,8 @@ steps:
     - --cache-ttl=24h
 
 - name: 'google/cloud-sdk:stable'
+  env:
+    - 'SHORT_SHA=$SHORT_SHA'
   script: |
     apt-get update && apt-get install -y apt-transport-https ca-certificates gnupg curl
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
