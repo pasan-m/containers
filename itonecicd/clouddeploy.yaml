@@ -10,8 +10,10 @@ steps:
 
 - name: 'google/cloud-sdk:stable'
   script: |
-    apt-get update && apt-get install -y git curl kubectl
+    apt-get update && apt-get install -y git curl
     curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     gcloud source repos clone kube-manifest --project=itone-295207
     cd kube-manifest
     gcloud container clusters get-credentials itone-staging-cluster --zone asia-southeast1-a --project itone-295207 
